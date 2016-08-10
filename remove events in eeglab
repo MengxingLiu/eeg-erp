@@ -1,0 +1,20 @@
+clear;
+clc;
+eeglab;
+raw_path = 'E:\data\ERPdata4_film\raw\';
+result_path = 'E:\data\ERPdata4_film\result\';
+for s = 1 : 15 % number of subjects
+	sub = strcat('sub',num2str(s),'epoch.set');
+        fname = [sub '_' num2str(n) '.set'];
+        EEG = pop_loadset('filename',fname,'filepath',raw_path);
+		event_list = extractfield(EEG.event,'type');
+		indices = 1:length(event_list);
+					
+		%% get the indices of events which would be deleted
+		indices = indices(603:7:end);	
+		rm_indices = sort([[1:600],indices,indices+1,indices+2,indices+3]);
+		%% delete the events selected
+		EEG = pop_selectevent( EEG, 'omitevent',rm_indices,'deleteevents','off','deleteepochs','on','invertepochs','off');
+        EEG = pop_saveset(EEG,'filename',fname,'filepath',result_path);
+    end
+end
