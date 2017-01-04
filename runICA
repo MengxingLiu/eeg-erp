@@ -1,0 +1,19 @@
+clear;
+close all;
+eeglab;
+spath = 'E:\ERP_3\3_location\';
+rpath = 'E:\ERP_3\4_ICA\';
+for s = 25 : 26
+	sub = strcat('sub',num2str(s));
+    %% load dataset
+    setfile = [spath sub '_location.set'];
+    EEG = pop_loadset(setfile);
+    EEG = eeg_checkset( EEG );
+    %% run ICA
+    EEG = pop_runica(EEG, 'extended',1);    
+	EEG = eeg_checkset( EEG );
+    %% Save dataset to new folder:
+    outfile = [rpath sub '_ica.set'];
+    EEG = pop_saveset( EEG, outfile);
+    EEG = eeg_checkset( EEG );
+end
