@@ -1,0 +1,33 @@
+clear;
+close all;
+eeglab;
+spath = 'E:\ERP_TEST_Script\2_reject\';
+rpath = 'E:\ERP_TEST_Script\3_filter\';
+
+for s = 1 : 26
+	sub = strcat('sub',num2str(s));
+    %% load dataset
+    setfile = [spath sub '_reject.set'];
+    EEG = pop_loadset(setfile);
+    EEG = eeg_checkset( EEG );
+    %% band filter
+    hpass = 0.1; %set high pass at 0.1Hz 
+    EEG = pop_eegfiltnew(EEG, 0.1,[]);
+    EEG.setname = strcat(sub,'_hpass');
+    EEG = eeg_checkset( EEG );
+    
+    lpass = 30; %set low pass at 30Hz
+    EEG = pop_eegfiltnew(EEG, [], 30);
+    EEG.setname = strcat(sub,'_filt');
+    EEG = eeg_checkset( EEG );
+    %% Re-Reference: 
+    EEG = pop_reref( EEG, 42);
+    EEG.setname = strcat(sub,'_reRef');
+    EEG = eeg_checkset( EEG );
+    
+    %% Save dataset to new folder:
+    outfile = [rpath sub '_reRef.set'];
+    EEG = pop_saveset( EEG, outfile);
+    EEG = eeg_checkset( EEG );
+    
+end
