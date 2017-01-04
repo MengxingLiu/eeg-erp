@@ -1,0 +1,18 @@
+clear;
+close all;
+eeglab;
+spath = 'D:\ERP\4_1_ICA\';
+rpath = 'D:\ERP\5_1_adjust\';
+
+for s = 1 : 26
+	sub = strcat('sub',num2str(s));
+    %% load dataset
+    setfile = [spath sub '_ica.set'];
+    EEG = pop_loadset(setfile);
+    EEG = eeg_checkset( EEG );
+    %% ADJUST and save report
+    rep_name = [rpath sub '_report.txt'];
+    EEG = interface_ADJ (EEG,rep_name);
+    
+    
+end
