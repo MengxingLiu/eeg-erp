@@ -1,0 +1,26 @@
+
+clear;
+close all;
+
+[ALLEEG EEG CURRENTSET ALLCOM] = eeglab;
+datasets = {};
+for s = 1:26
+    sub = strcat('sub',num2str(s));
+    for n = 1:10
+        cond_list = {'111' '112' '113' '114' '115' '211' '212' '213' '214' '215'};
+        datasets = { datasets{:} {'index' length(datasets)+1 'load' ['E:\ERP_TEST_Script\6_2_epoch\' sub '_' cond_list{n} '.set'] 'subject' sub 'condition' num2str(n)}};
+    end
+end
+[STUDY ALLEEG] = std_editset( STUDY, ALLEEG, 'commands',datasets,'updatedat','on' );
+CURRENTSTUDY = 1; EEG = ALLEEG; CURRENTSET = [1:length(EEG)];
+EEG = eeg_checkset( EEG );
+[STUDY EEG] = pop_savestudy( STUDY, EEG, 'filename','N170_STUDY_rmbaseline_2.study','filepath','E:\ERP_TEST_Script\merge1\');
+
+CURRENTSTUDY = 1; EEG = ALLEEG; CURRENTSET = [1:length(EEG)];
+[STUDY ALLEEG] = std_precomp(STUDY, ALLEEG, {},'interp','on','recompute','on','erp','on','erpparams',{'rmbase' [-100 0] });
+CURRENTSTUDY = 1; EEG = ALLEEG; CURRENTSET = [1:length(EEG)];
+
+STUDY = pop_erpparams(STUDY, 'filter',15,'topotime',[]);
+STUDY = std_erpplot(STUDY,ALLEEG,'channels',{'PO7'});
+CURRENTSTUDY = 1; EEG = ALLEEG; CURRENTSET = [1:length(EEG)];
+eeglab redraw;
